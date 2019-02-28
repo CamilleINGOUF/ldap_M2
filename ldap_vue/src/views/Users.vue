@@ -9,6 +9,7 @@
       ></v-divider>
       <v-spacer></v-spacer>
       <form-user v-on:update="getData"/>
+      <v-btn color="red" @click="dialogConfirmDelete = true">Tout supprimer</v-btn>
     </v-toolbar>
     <v-data-table
       hide-actions
@@ -84,6 +85,18 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogConfirmDelete" persistent>
+      <v-card>
+        <v-card-title>
+          <span class="headline">Tout supprimer ?</span>
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click="cancelDelete">Annuler</v-btn>
+          <v-btn color="blue darken-1" flat @click="deleteAll">Valider</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -117,7 +130,8 @@ export default {
     groups: [],
     pass: '',
     info: '',
-    name: ''
+    name: '',
+    dialogConfirmDelete: false
   }),
   
   async mounted () {
@@ -173,6 +187,22 @@ export default {
       this.updateItem (this.toEdit.dn, state)
       this.reset()
       await this.getData()
+    },
+
+    cancelDelete () {
+      this.dialogConfirmDelete = false
+    }, 
+
+    async deleteAll () {
+      Promise.all(this.clients.map(async c => {
+        const state = {
+          dn: c.dn,
+          supp: true
+        }
+        await axios.post('http://localhost:3000/users',{state: state}).then(async resut => resut)
+      }))
+      await this.getData()
+      this.cancelDelete()
     }
   },
 

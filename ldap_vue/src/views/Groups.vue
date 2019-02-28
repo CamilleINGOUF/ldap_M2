@@ -9,6 +9,7 @@
       ></v-divider>
       <v-spacer></v-spacer>
       <form-group v-on:update="getData"/>
+     <v-btn color="red" @click="dialogConfirmDelete = true">Tout supprimer</v-btn>
     </v-toolbar>
     <v-data-table
       hide-actions
@@ -104,6 +105,18 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogConfirmDelete" persistent>
+      <v-card>
+        <v-card-title>
+          <span class="headline">Tout supprimer ?</span>
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click="cancelDelete">Annuler</v-btn>
+          <v-btn color="blue darken-1" flat @click="deleteAll">Valider</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -134,7 +147,8 @@ export default {
     groupToEdit: null,
     users: [],
     userToAdd: null,
-    userToRemove: null
+    userToRemove: null,
+    dialogConfirmDelete: false
   }),
   
   async mounted () {
@@ -209,6 +223,22 @@ export default {
       const res = axios.post('http://localhost:3000/groups',{state: state}).then(async resut => resut)
       console.log({res})
     },
+
+    cancelDelete () {
+      this.dialogConfirmDelete = false
+    }, 
+
+    async deleteAll () {
+      Promise.all(this.groups.map(async c => {
+        const state = {
+          dn: c.dn,
+          supp: true
+        }
+        await axios.post('http://localhost:3000/groups',{state: state}).then(async resut => resut)
+      }))
+      await this.getData()
+      this.cancelDelete()
+    }
   },
 
   computed: {
