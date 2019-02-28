@@ -5,8 +5,7 @@ var LDAP = require('../utils/LDAP')
 
 /* GET home page. */
 router.post('/connect', async (req, res, next) => {
-    const result = await LDAP.connect(req.body.login, req.body.pass)
-    console.log({result})
+    const result = await LDAP.connect(req.body.login, req.body.pass).catch(e => res.send(false))
     res.send(result)
 });
 

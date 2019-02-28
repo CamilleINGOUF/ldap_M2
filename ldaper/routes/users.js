@@ -7,36 +7,6 @@ var ldapjs = require('ldapjs')
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
   const result = await LDAP.search('people') 
-  // console.log(result)
-  // const newDN = 'cn=beubeu veve,ou=people,dc=bla,dc=com'
-  // const newUser = {
-  //   cn: 'beubeu veve',
-  //   sn: 'beubeu',
-  //   uid: 'connard',
-  //   userPassword: 'beubeu',
-  //   homeDirectory: '/home/beubeu',
-  //   uidNumber: '1500',
-  //   gidNumber: '1500',
-  //   loginShell: '/bin/bash',  
-  //   givenName: 'BeuBeu',
-  //   objectClass: [
-  //     'top',
-  //     'person',
-  //     'organizationalPerson',
-  //     'inetOrgPerson',
-  //     'posixAccount',
-  //     'shadowAccount'
-  //   ]
-  // }
-  // const change = new ldapjs.Change({
-  //   operation: 'replace',
-  //   modification: {
-  //     description: 'Juste un connard'
-  //   }
-  // });
-  // await LDAP.put(newDN, change)
-  // await LDAP.del(newDN)
-  // await LDAP.add(newDN,newUser)
   res.send(result);
 });
 

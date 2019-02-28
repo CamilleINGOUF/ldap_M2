@@ -52,12 +52,11 @@ export default {
   methods: {
     async validate () {
       if (this.$refs.form.validate()) {
-        await axios.post("http://localhost:3000/account/connect", {
+        const res = await axios.post("http://localhost:3000/account/connect", {
           login: this.name,
           pass: this.pass
-        }).then(() => {
-          // console.log({resp})
-        })
+        }).then((res) => res)
+        console.log({res})
       }
     }
   }

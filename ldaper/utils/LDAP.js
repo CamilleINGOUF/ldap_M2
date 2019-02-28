@@ -2,16 +2,25 @@
 var ldaper = require('ldapjs')
 const assert = require('assert')
 
-let client = ldaper.createClient({
-  url: 'ldap://127.0.0.1:389'
-})
-
+let client = null
+// +',dc=bla,dc=com'
 async function connect (login, pass) {
+  return await connectClient(login, pass).then(res => res)
+}
+
+async function connectClient(login, pass, callback) {
+
   return new Promise((resolve, reject) => {
-    console.log({login, pass})
+    client = ldaper.createClient({
+      url: 'ldap://127.0.0.1:389'
+    })
     client.bind('cn='+login+',dc=bla,dc=com', pass, (err) => {
-      if(err) reject({result: false})
-      else resolve({result: true})
+        if(err) {
+          client.unbind();
+          reject(false)
+        } else {
+          resolve(true)
+        }
     })
   })
 }

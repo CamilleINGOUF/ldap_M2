@@ -4,11 +4,12 @@
       <v-toolbar-title>LDAP TP</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="align-center">
+        <router-link to="/"><v-btn flat>Login</v-btn></router-link>
         <router-link to="/users"><v-btn flat>Utilisateurs</v-btn></router-link>
         <router-link to="/groups"><v-btn flat>Groupes</v-btn></router-link>
         <v-btn @click="exportJSON" flat>Export</v-btn>
         <v-btn @click="dialogImport = true" flat>Import</v-btn>
-        <!-- <v-btn flat @click="disconnect">Déconnexion</v-btn> -->
+        <v-btn flat @click="disconnect">Déconnexion</v-btn>
       </v-toolbar-items>
     </v-toolbar>
 

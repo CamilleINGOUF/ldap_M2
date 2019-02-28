@@ -50,6 +50,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-LDAP.connect('admin', 'bla')
+// LDAP.connect('admin', 'bla')
 
 module.exports = app;
