@@ -10,9 +10,7 @@ router.post('/connect', async (req, res, next) => {
 });
 
 router.post('/disconnect', async (req, res, next) => {
-    console.log('disco')
     const result = await LDAP.disconnect()
-    console.log({result})
     res.status(200).json(result)
 });
 

@@ -8,7 +8,7 @@
         vertical
       ></v-divider>
       <v-spacer></v-spacer>
-      <form-group/>
+      <form-group v-on:update="getData"/>
     </v-toolbar>
     <v-data-table
       hide-actions
@@ -138,22 +138,7 @@ export default {
   }),
   
   async mounted () {
-    const resp = await axios({
-      method:'get',
-      url:'http://localhost:3000/groups',
-      responseType:'json'
-    })
-    .then(async (response) => response);
-    const resp2 = await axios({
-      method:'get',
-      url:'http://localhost:3000/users',
-      responseType:'json'
-    })
-    .then(async (response) => response);
-    // this.groups = resp.data.filter(d => d.cn)
-    // this.users = resp2.data.filter(d => d.cn)
-    this.groups = resp.data
-    this.users = resp2.data
+    await this.getData()
   },
 
   components: {
@@ -161,6 +146,25 @@ export default {
   },
 
   methods: {
+    async getData() {
+      const resp = await axios({
+        method:'get',
+        url:'http://localhost:3000/groups',
+        responseType:'json'
+      })
+      .then(async (response) => response);
+      const resp2 = await axios({
+        method:'get',
+        url:'http://localhost:3000/users',
+        responseType:'json'
+      })
+      .then(async (response) => response);
+      // this.groups = resp.data.filter(d => d.cn)
+      // this.users = resp2.data.filter(d => d.cn)
+      this.groups = resp.data
+      this.users = resp2.data
+    },
+
     async deleteItem (dn) {
       const state = {
         dn: dn,

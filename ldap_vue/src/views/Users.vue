@@ -8,7 +8,7 @@
         vertical
       ></v-divider>
       <v-spacer></v-spacer>
-      <form-user/>
+      <form-user v-on:update="getData"/>
     </v-toolbar>
     <v-data-table
       hide-actions
@@ -96,14 +96,7 @@ export default {
   }),
   
   async mounted () {
-    const resp = await axios({
-      method:'get',
-      url:'http://localhost:3000/users',
-      responseType:'json'
-    })
-    // .then(async (response) => response);
-    // this.clients = resp.data.filter(d => d.cn)
-    this.clients = resp.data
+    await this.getData()
   },
 
   components: {
@@ -111,6 +104,17 @@ export default {
   },
 
   methods: {
+    async getData() {
+      const resp = await axios({
+      method:'get',
+      url:'http://localhost:3000/users',
+      responseType:'json'
+    })
+    // .then(async (response) => response);
+    // this.clients = resp.data.filter(d => d.cn)
+    this.clients = resp.data
+    },
+
     async deleteItem (dn) {
       // const resp = await axios({
       //   method:'delete',

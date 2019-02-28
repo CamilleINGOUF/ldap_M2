@@ -1,6 +1,9 @@
 <template>
   <v-container>
     <v-card>
+      <v-card-title>
+        {{ status }}
+      </v-card-title>
       <v-card-text>
         <v-form
           ref="form"
@@ -46,7 +49,8 @@ export default {
     pass: '',
     passRules: [
       v => !!v || 'PassWord is required'
-    ]
+    ],
+    status: 'Connexion'
   }),
 
   methods: {
@@ -56,7 +60,11 @@ export default {
           login: this.name,
           pass: this.pass
         }).then((res) => res)
-        console.log({res})
+        if(res.data) {
+          this.status = "Succés !"
+        } else {
+          this.status = "Echec !"
+        }
       }
     }
   }

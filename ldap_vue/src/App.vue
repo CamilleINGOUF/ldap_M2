@@ -5,11 +5,11 @@
       <v-spacer></v-spacer>
       <v-toolbar-items class="align-center">
         <router-link to="/"><v-btn flat>Login</v-btn></router-link>
+        <v-btn flat @click="disconnect">Déconnexion</v-btn>
         <router-link to="/users"><v-btn flat>Utilisateurs</v-btn></router-link>
         <router-link to="/groups"><v-btn flat>Groupes</v-btn></router-link>
         <v-btn @click="exportJSON" flat>Export</v-btn>
         <v-btn @click="dialogImport = true" flat>Import</v-btn>
-        <v-btn flat @click="disconnect">Déconnexion</v-btn>
       </v-toolbar-items>
     </v-toolbar>
 
@@ -51,7 +51,8 @@ export default {
 
   data: () => ({
     dialogImport: false,
-    file: null
+    file: null,
+    loggedAdmin: false
   }),
 
   methods: {
@@ -59,6 +60,7 @@ export default {
       // console.log('oui')
       const result = await axios.post("http://localhost:3000/account/disconnect").then(res => res)
       if(result) {
+        this.loggedAdmin = false
         this.$router.push({path: '/'})
       } else {
         // console.log('echec')

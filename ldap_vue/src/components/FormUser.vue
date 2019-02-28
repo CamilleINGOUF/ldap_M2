@@ -57,8 +57,8 @@ export default {
         const result = await axios.post('http://localhost:3000/users', {
           state: this.state
         }).then(res => res)
-        console.log({result})
         this.dialog = false
+        this.$emit('update')
       }
     },
 
