@@ -91,16 +91,8 @@ export default {
         responseType:'json'
       })
       console.log({people: resp.data, groups: resp2.data})
-      const groups = resp.data.map(g => ({
-        dn: g.dn,
-        cn: g.cn,
-        description: g.description
-      }))
-      const people = resp2.data.map(p => ({
-        cn: p.cn,
-        sn: p.sn,
-        description: p.description
-      }))
+      const groups = resp.data.filter(g => g.cn)
+      const people = resp2.data.filter(p => p.sn)
       let jsonData = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({groups: groups, people: people}))
       let downloadAnchorNode = document.getElementById('downloadAnchorElem');
       downloadAnchorNode.setAttribute("href", jsonData);
@@ -132,37 +124,32 @@ export default {
 
     async import(jsonData) {
       const res = Promise.all(jsonData.people.map(async person => {
-        if(person.cn) {
-          await axios.post('http://localhost:3000/users', {
-            state: {
-              login: person.cn,
-              name: person.sn,
-              description: person.description
-            }
-          }).then(res => res)
-        }
+        await axios.post('http://localhost:3000/users', {
+          state: {
+            import: true,
+            user: person,
+            dn: person.dn
+          }
+        }).then(res => res)
       })).then(res => res)
-      // console.log({res})
       const res2 = Promise.all(jsonData.groups.map(async group => {
-        if(group.cn) {
-          await axios.post('http://localhost:3000/groups', {
-            state: {
-              name: group.cn,
-              description: group.description
-            }
-          }).then(res => res)
-          await Promise.all(group.memberUid.map(async m => {
-            const state = {
-              dn: group.dn,
-              uid: m,
-              addUser: true
-            }
-            console.log(state)
-            await axios.post('http://localhost:3000/groups',{state: state}).then(async resut => resut)
-          })).then(res => res)
-        }
+        await axios.post('http://localhost:3000/groups', {
+          state: {
+            import: true,
+            group: group,
+            dn: group.dn
+          }
+        }).then(res => res)
+        // await Promise.all(group.memberUid.map(async m => {
+        //   const state = {
+        //     dn: group.dn,
+        //     uid: m,
+        //     addUser: true
+        //   }
+        //   console.log(state)
+        //   await axios.post('http://localhost:3000/groups',{state: state}).then(async resut => resut)
+        // })).then(res => res)
       })).then(res => res)
-      // console.log({res2})
     }
   }
 }

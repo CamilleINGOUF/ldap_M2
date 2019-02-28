@@ -32,6 +32,10 @@ router.post('/', async (req, res, next) => {
     });
     const resultat = await LDAP.put(req.body.state.dn, change)
     res.send(resultat)
+  } else if(state.import) {
+    delete state.group.dn
+    const resultat = await LDAP.add(state.dn, state.group)
+    res.send(resultat)
   } else if(state.supp) {
     const resultat = await LDAP.del(req.body.state.dn)
     res.send(resultat)

@@ -42,6 +42,11 @@ router.post('/', async (req, res, next) => {
   } else if(state.supp) {
     const resultat = await LDAP.del(req.body.state.dn)
     res.send(resultat)
+  } else if(state.import) {
+    delete state.user.dn
+    console.log(state.user)
+    const resultat = await LDAP.add(state.dn, state.user)
+    res.send(resultat)
   } else {
     const dn = 'cn='+state.login+',ou=people,dc=bla,dc=com'
     const random = Math.floor(Math.random() * 5000 + 1000)
