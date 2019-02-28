@@ -63,6 +63,7 @@ export default {
         }).then((res) => res)
         if(res.data) {
           this.status = "Succés !"
+          this.$router.push('/users')
           location.reload();
         } else {
           this.status = "Echec !"

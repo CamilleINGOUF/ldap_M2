@@ -145,6 +145,7 @@ export default {
         supp: true
       }
       const res = axios.post('http://localhost:3000/users',{state: state}).then(async resut => resut)
+      await this.getData()
     },
 
     async updateItem (dn, state) {

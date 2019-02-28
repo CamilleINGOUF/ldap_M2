@@ -4,12 +4,12 @@
       <v-toolbar-title>LDAP TP</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="align-center">
-        <router-link to="/"><v-btn flat>Login</v-btn></router-link>
-        <v-btn flat v-if="info.login" @click="disconnect">Déconnexion</v-btn>
+        <router-link v-if="!info.login" to="/"><v-btn flat>Login</v-btn></router-link>
         <router-link v-if="info.login" to="/users"><v-btn flat>Utilisateurs</v-btn></router-link>
         <router-link v-if="info.admin" to="/groups"><v-btn flat>Groupes</v-btn></router-link>
         <v-btn v-if="info.admin" @click="exportJSON" flat>Export</v-btn>
         <v-btn v-if="info.admin" @click="dialogImport = true" flat>Import</v-btn>
+        <v-btn flat v-if="info.login" color="red" @click="disconnect">Déconnexion</v-btn>
       </v-toolbar-items>
     </v-toolbar>
 

@@ -13,7 +13,7 @@
     <v-data-table
       hide-actions
       :headers="headers"
-      :items="groups"
+      :items="list"
       class="elevation-1"
     >
       <template slot="items" slot-scope="props">
@@ -172,6 +172,7 @@ export default {
       }
       const res = axios.post('http://localhost:3000/groups',{state: state}).then(async resut => resut)
       // console.log({res})
+      await this.getData()
     },
 
     reset () {
@@ -217,6 +218,10 @@ export default {
 
     listUser2 () {
       return this.groupToEdit.memberUid
+    },
+
+    list () {
+      return this.groups.filter(g => g.cn)
     }
   }
 }
