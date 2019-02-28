@@ -39,6 +39,7 @@
 
 <script>
 import axios from 'axios'
+import store from '../store.js'
 export default {
   data: () => ({
     valid: true,
@@ -62,6 +63,7 @@ export default {
         }).then((res) => res)
         if(res.data) {
           this.status = "Succés !"
+          location.reload();
         } else {
           this.status = "Echec !"
         }

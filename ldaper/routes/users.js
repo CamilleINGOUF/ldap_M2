@@ -13,14 +13,31 @@ router.get('/', async function(req, res, next) {
 router.post('/', async (req, res, next) => {
   const state = req.body.state
   if(state.edit) {
-    console.log(req.body.state)
-    const change = new ldapjs.Change({
-      operation: 'replace',
-      modification: {
-        description: req.body.state.comment
-      }
-    });
-    const resultat = await LDAP.put(req.body.state.dn, change)
+    let resultat = null
+    if(req.body.state.admin) {
+      const change = new ldapjs.Change({
+        operation: 'replace',
+        modification: {
+          description: req.body.state.comment
+        }
+      });
+      const change2 = new ldapjs.Change({
+        operation: 'replace',
+        modification: {
+          sn: req.body.state.name
+        }
+      });
+      await LDAP.put(req.body.state.dn, change)
+      resultat = await LDAP.put(req.body.state.dn, change2)
+    } else {
+      const change = new ldapjs.Change({
+        operation: 'replace',
+        modification: {
+          userPassword: req.body.state.pass
+        }
+      });
+      resultat = await LDAP.put(req.body.state.dn, change)
+    }
     res.send(resultat)
   } else if(state.supp) {
     const resultat = await LDAP.del(req.body.state.dn)
@@ -54,15 +71,21 @@ router.post('/', async (req, res, next) => {
 });
 
 router.put('/', async function(req, res, next) {
-  console.log(req)
-  const change = new ldapjs.Change({
+  let change = new ldapjs.Change({
     operation: 'replace',
     modification: {
       description: req.body.state.comment
     }
   });
-  const resultat = await LDAP.put(req.body.state.dn, change)
-  res.send(resultat)
+  let resultat = await LDAP.put(req.body.state.dn, change)
+  const change2 = new ldapjs.Change({
+    operation: 'replace',
+    modification: {
+      userPassword: req.body.state.pass
+    }
+  });
+  const resultat2 = await LDAP.put(req.body.state.dn, change2)
+  res.send(resultat, resultat2)
 });
 
 router.delete('/', async (req, res, next) => {

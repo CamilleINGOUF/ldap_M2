@@ -182,7 +182,7 @@ export default {
       this.groupToEdit = null
     },
 
-    valid () {
+    async valid () {
       const state = {
         dn: this.groupToEdit.dn,
         uid: this.userToAdd.uid,
@@ -190,9 +190,10 @@ export default {
       }
       this.updateItem (this.groupToEdit.dn, state)
       this.reset()
+      await this.getData()
     },
 
-    valid2 () {
+    async valid2 () {
       const state = {
         dn: this.groupToEdit.dn,
         uid: this.userToRemove,
@@ -200,6 +201,7 @@ export default {
       }
       this.updateItem (this.groupToEdit.dn, state)
       this.reset()
+      await this.getData()
     },
 
     async updateItem (dn, state) {

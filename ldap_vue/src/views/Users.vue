@@ -13,13 +13,13 @@
     <v-data-table
       hide-actions
       :headers="headers"
-      :items="clients"
+      :items="list"
       class="elevation-1"
     >
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.dn }}</td>
-        <td>{{ props.item.cn }}</td>
+        <td>{{ props.item.sn }}</td>
         <td>{{ props.item.uid }}</td>
+        <td>{{ props.item.userPassword }}</td>
         <td>{{ props.item.description }}</td>
         <td class="justify-center layout px-0">
           <v-icon
@@ -28,7 +28,9 @@
             @click="
               dialogEdit = true
               toEdit = props.item
-              comment = props.item.description"
+              comment = props.item.description
+              pass = props.item.userPassword
+              name= props.item.sn"
           >
             edit
           </v-icon>
@@ -55,6 +57,21 @@
                   v-model="comment"
                   persistent-hint
                   required
+                  v-if="info.admin"
+                ></v-text-field>
+                <v-text-field
+                  label="Nom"
+                  v-model="name"
+                  persistent-hint
+                  required
+                  v-if="info.admin"
+                ></v-text-field>
+                <v-text-field
+                  label="Pass"
+                  v-model="pass"
+                  persistent-hint
+                  required
+                  v-else
                 ></v-text-field>
               </v-flex>
             </v-layout>
@@ -74,25 +91,33 @@
 import axios from 'axios'
 
 import FormUser from '@/components/FormUser.vue'
+
+import store from '../store.js'
 export default {
   data: () => ({
     clients: null,
     headers: [
-      { text: 'dn', value: 'dn' },
       {
-        text: 'cn',
-        value: 'cn'
+        text: 'sn',
+        value: 'sn'
       },
       {
         text: 'uid',
         value: 'uid'
+      },
+      {
+        text: 'userPassword',
+        value: 'userPassword'
       },
       { text: 'Description', value: 'description' },
     ],
     dialogEdit: false,
     comment: '',
     toEdit: null,
-    groups: []
+    groups: [],
+    pass: '',
+    info: '',
+    name: ''
   }),
   
   async mounted () {
@@ -106,40 +131,24 @@ export default {
   methods: {
     async getData() {
       const resp = await axios({
-      method:'get',
-      url:'http://localhost:3000/users',
-      responseType:'json'
-    })
-    // .then(async (response) => response);
-    // this.clients = resp.data.filter(d => d.cn)
-    this.clients = resp.data
+        method:'get',
+        url:'http://localhost:3000/users',
+        responseType:'json'
+      })
+      this.clients = resp.data
+      this.info = this.clients.find(c => c.login)
     },
 
     async deleteItem (dn) {
-      // const resp = await axios({
-      //   method:'delete',
-      //   url:'http://localhost:3000/users',
-      //   responseType:'json',
-      //   data: {dn: dn}
-      // }).then(async (response) => response);
-      // console.log({resp})
       const state = {
         dn: dn,
         supp: true
       }
       const res = axios.post('http://localhost:3000/users',{state: state}).then(async resut => resut)
-      // console.log({res})
     },
 
     async updateItem (dn, state) {
-      // const resp = await axios({
-      //   method:'put',
-      //   url:'http://localhost:3000/users',
-      //   responseType:'json',
-      //   data: {dn: dn, state: state}
-      // }).then(async (response) => response);
       const res = axios.post('http://localhost:3000/users',{state: state}).then(async resut => resut)
-      // console.log({res})
     },
 
     reset () {
@@ -148,14 +157,27 @@ export default {
       this.toEdit = null
     },
 
-    valid () {
-      const state = {
+    async valid () {
+      let state = {
         dn: this.toEdit.dn,
-        comment: this.comment,
-        edit: true
+        edit: true,
+        admin: this.info.admin
+      }
+      if (this.info.admin) {
+        state['comment'] = this.comment
+        state['name'] = this.name
+      } else {
+        state['pass'] = this.pass
       }
       this.updateItem (this.toEdit.dn, state)
       this.reset()
+      await this.getData()
+    }
+  },
+
+  computed: {
+    list() {
+      return this.clients.filter(c => c.sn)
     }
   }
 }

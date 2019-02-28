@@ -7,9 +7,9 @@
         <router-link to="/"><v-btn flat>Login</v-btn></router-link>
         <v-btn flat @click="disconnect">Déconnexion</v-btn>
         <router-link to="/users"><v-btn flat>Utilisateurs</v-btn></router-link>
-        <router-link to="/groups"><v-btn flat>Groupes</v-btn></router-link>
-        <v-btn @click="exportJSON" flat>Export</v-btn>
-        <v-btn @click="dialogImport = true" flat>Import</v-btn>
+        <router-link v-if="info.admin" to="/groups"><v-btn flat>Groupes</v-btn></router-link>
+        <v-btn v-if="info.admin" @click="exportJSON" flat>Export</v-btn>
+        <v-btn v-if="info.admin" @click="dialogImport = true" flat>Import</v-btn>
       </v-toolbar-items>
     </v-toolbar>
 
@@ -52,8 +52,18 @@ export default {
   data: () => ({
     dialogImport: false,
     file: null,
-    loggedAdmin: false
+    loggedAdmin: false,
+    info: {admin: false}
   }),
+
+  async mounted () {
+    const resp2 = await axios({
+      method:'get',
+      url:'http://localhost:3000/users',
+      responseType:'json'
+    })
+    this.info = resp2.data.find(d => d.login)
+  },
 
   methods: {
     async disconnect () {
@@ -62,6 +72,7 @@ export default {
       if(result) {
         this.loggedAdmin = false
         this.$router.push({path: '/'})
+        location.reload();
       } else {
         // console.log('echec')
       }

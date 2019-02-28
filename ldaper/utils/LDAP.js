@@ -3,13 +3,16 @@ var ldaper = require('ldapjs')
 const assert = require('assert')
 
 let client = null
+var loginConnected = ''
 // +',dc=bla,dc=com'
 async function connect (login, pass) {
+  loginConnected = login
   return await connectClient(login, pass).then(res => res)
 }
 
 async function connectClient(login, pass, callback) {
-
+  if(login !== 'Admin')
+    login+=',ou=people'
   return new Promise((resolve, reject) => {
     client = ldaper.createClient({
       url: 'ldap://127.0.0.1:389'
@@ -34,7 +37,11 @@ async function disconnect () {
 
 async function search (ou) {
   return new Promise((resvole, reject) => {
-    client.search('ou='+ou+',dc=bla,dc=com', {scope: 'sub'}, function(err,res) {
+    var opts = {
+      filter: loginConnected === 'Admin' ? '(objectclass=*)' : '(&(uid='+loginConnected+'))',
+      scope: 'sub'
+    };
+    client.search('ou='+ou+',dc=bla,dc=com', opts, function(err,res) {
       assert.ifError(err)
       let entries = []
       res.on('searchEntry', function(entry) {
@@ -51,6 +58,7 @@ async function search (ou) {
       });
       
       res.on('end', function(result) {
+        entries.push({login: loginConnected, 'admin': (loginConnected === 'Admin')})
         resvole(entries)
       });
     })
