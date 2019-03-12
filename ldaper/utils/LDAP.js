@@ -15,7 +15,7 @@ async function connectClient(login, pass, callback) {
     login+=',ou=people'
   return new Promise((resolve, reject) => {
     client = ldaper.createClient({
-      url: 'ldap://127.0.0.1:389'
+      url: 'ldap://ldap:389'
     })
     client.bind('cn='+login+',dc=bla,dc=com', pass, (err) => {
         if(err) {

@@ -59,7 +59,7 @@ export default {
   async mounted () {
     const resp2 = await axios({
       method:'get',
-      url:'http://localhost:3000/users',
+      url:'http://ldap_server:3000/users',
       responseType:'json'
     })
     this.info = resp2.data.find(d => d.login)
@@ -68,7 +68,7 @@ export default {
   methods: {
     async disconnect () {
       // console.log('oui')
-      const result = await axios.post("http://localhost:3000/account/disconnect").then(res => res)
+      const result = await axios.post("http://ldap_server:3000/account/disconnect").then(res => res)
       if(result) {
         this.loggedAdmin = false
         this.$router.push({path: '/'})
@@ -81,13 +81,13 @@ export default {
     async exportJSON () {
       const resp = await axios({
         method:'get',
-        url:'http://localhost:3000/groups',
+        url:'http://ldap_server:3000/groups',
         responseType:'json'
       })
       .then(async (response) => response);
       const resp2 = await axios({
         method:'get',
-        url:'http://localhost:3000/users',
+        url:'http://ldap_server:3000/users',
         responseType:'json'
       })
       console.log({people: resp.data, groups: resp2.data})
@@ -132,7 +132,7 @@ export default {
 
     async import(jsonData) {
       const res = await Promise.all(jsonData.people.map(async person => {
-        await axios.post('http://localhost:3000/users', {
+        await axios.post('http://ldap_server:3000/users', {
           state: {
             import: true,
             user: person,
@@ -141,7 +141,7 @@ export default {
         }).then(res => res)
       })).then(res => res)
       const res2 = await Promise.all(jsonData.groups.map(async group => {
-        await axios.post('http://localhost:3000/groups', {
+        await axios.post('http://ldap_server:3000/groups', {
           state: {
             import: true,
             group: group,
@@ -155,7 +155,7 @@ export default {
         //     addUser: true
         //   }
         //   console.log(state)
-        //   await axios.post('http://localhost:3000/groups',{state: state}).then(async resut => resut)
+        //   await axios.post('http://ldap_server:3000/groups',{state: state}).then(async resut => resut)
         // })).then(res => res)
       })).then(res => res)
     }

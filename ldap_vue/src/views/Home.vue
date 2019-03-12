@@ -57,7 +57,7 @@ export default {
   methods: {
     async validate () {
       if (this.$refs.form.validate()) {
-        const res = await axios.post("http://localhost:3000/account/connect", {
+        const res = await axios.post("http://ldap_server:3000/account/connect", {
           login: this.name,
           pass: this.pass
         }).then((res) => res)

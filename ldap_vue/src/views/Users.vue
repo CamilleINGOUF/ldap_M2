@@ -146,7 +146,7 @@ export default {
     async getData() {
       const resp = await axios({
         method:'get',
-        url:'http://localhost:3000/users',
+        url:'http://ldap_server:3000/users',
         responseType:'json'
       })
       this.clients = resp.data
@@ -158,12 +158,12 @@ export default {
         dn: dn,
         supp: true
       }
-      const res = await axios.post('http://localhost:3000/users',{state: state}).then(async resut => resut)
+      const res = await axios.post('http://ldap_server:3000/users',{state: state}).then(async resut => resut)
       await this.getData()
     },
 
     async updateItem (dn, state) {
-      const res = await axios.post('http://localhost:3000/users',{state: state}).then(async resut => resut)
+      const res = await axios.post('http://ldap_server:3000/users',{state: state}).then(async resut => resut)
       await this.getData()
     },
 
@@ -199,7 +199,7 @@ export default {
           dn: c.dn,
           supp: true
         }
-        await axios.post('http://localhost:3000/users',{state: state}).then(async resut => resut)
+        await axios.post('http://ldap_server:3000/users',{state: state}).then(async resut => resut)
       }))
       await this.getData()
       this.cancelDelete()

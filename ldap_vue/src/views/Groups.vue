@@ -163,13 +163,13 @@ export default {
     async getData() {
       const resp = await axios({
         method:'get',
-        url:'http://localhost:3000/groups',
+        url:'http://ldap_server:3000/groups',
         responseType:'json'
       })
       .then(async (response) => response);
       const resp2 = await axios({
         method:'get',
-        url:'http://localhost:3000/users',
+        url:'http://ldap_server:3000/users',
         responseType:'json'
       })
       .then(async (response) => response);
@@ -184,7 +184,7 @@ export default {
         dn: dn,
         supp: true
       }
-      const res = axios.post('http://localhost:3000/groups',{state: state}).then(async resut => resut)
+      const res = axios.post('http://ldap_server:3000/groups',{state: state}).then(async resut => resut)
       // console.log({res})
       await this.getData()
     },
@@ -220,7 +220,7 @@ export default {
     },
 
     async updateItem (dn, state) {
-      const res = await axios.post('http://localhost:3000/groups',{state: state}).then(async resut => resut)
+      const res = await axios.post('http://ldap_server:3000/groups',{state: state}).then(async resut => resut)
       console.log({res})
       await this.getData()
     },
@@ -235,7 +235,7 @@ export default {
           dn: c.dn,
           supp: true
         }
-        await axios.post('http://localhost:3000/groups',{state: state}).then(async resut => resut)
+        await axios.post('http://ldap_server:3000/groups',{state: state}).then(async resut => resut)
       }))
       await this.getData()
       this.cancelDelete()

@@ -50,7 +50,7 @@ export default {
   methods: {
     async save () {
       if (this.$refs.form.validate()) {
-        const result = await axios.post('http://localhost:3000/groups', {
+        const result = await axios.post('http://ldap_server:3000/groups', {
           state: this.state
         }).then(res => res)
         console.log({result})
