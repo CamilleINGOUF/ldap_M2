@@ -91,8 +91,16 @@ export default {
         responseType:'json'
       })
       console.log({people: resp.data, groups: resp2.data})
-      const groups = resp.data.filter(g => g.cn)
-      const people = resp2.data.filter(p => p.sn)
+      let groups = resp.data.filter(g => g.cn)
+      groups = groups.map(g => {
+        delete g.controls
+        return g
+      })
+      let people = resp2.data.filter(p => p.sn)
+      people = people.map(p => {
+        delete p.controls
+        return p
+      })
       let jsonData = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({groups: groups, people: people}))
       let downloadAnchorNode = document.getElementById('downloadAnchorElem');
       downloadAnchorNode.setAttribute("href", jsonData);
@@ -123,7 +131,7 @@ export default {
     },
 
     async import(jsonData) {
-      const res = Promise.all(jsonData.people.map(async person => {
+      const res = await Promise.all(jsonData.people.map(async person => {
         await axios.post('http://localhost:3000/users', {
           state: {
             import: true,
@@ -132,7 +140,7 @@ export default {
           }
         }).then(res => res)
       })).then(res => res)
-      const res2 = Promise.all(jsonData.groups.map(async group => {
+      const res2 = await Promise.all(jsonData.groups.map(async group => {
         await axios.post('http://localhost:3000/groups', {
           state: {
             import: true,

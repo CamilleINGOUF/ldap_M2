@@ -56,6 +56,7 @@ export default {
         console.log({result})
         this.dialog = false
         this.$emit('update')
+        this.cancel()
       }
     },
 

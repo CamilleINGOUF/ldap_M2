@@ -203,7 +203,7 @@ export default {
         uid: this.userToAdd.uid,
         addUser: true
       }
-      this.updateItem (this.groupToEdit.dn, state)
+      await this.updateItem (this.groupToEdit.dn, state)
       this.reset()
       await this.getData()
     },
@@ -215,13 +215,14 @@ export default {
         removeUser: true
       }
       this.updateItem (this.groupToEdit.dn, state)
-      this.reset()
       await this.getData()
+      this.reset()
     },
 
     async updateItem (dn, state) {
-      const res = axios.post('http://localhost:3000/groups',{state: state}).then(async resut => resut)
+      const res = await axios.post('http://localhost:3000/groups',{state: state}).then(async resut => resut)
       console.log({res})
+      await this.getData()
     },
 
     cancelDelete () {
@@ -243,7 +244,8 @@ export default {
 
   computed: {
     listUser () {
-      return this.users.filter(u => !this.groupToEdit.memberUid || !this.groupToEdit.memberUid.includes(u.uid))
+      const users =  this.users.filter(u => !this.groupToEdit.memberUid || !this.groupToEdit.memberUid.includes(u.uid))
+      return users.filter(u => u.cn)
     },
 
     listUser2 () {

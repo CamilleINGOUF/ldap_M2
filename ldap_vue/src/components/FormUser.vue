@@ -59,6 +59,7 @@ export default {
         }).then(res => res)
         this.dialog = false
         this.$emit('update')
+        this.cancel()
       }
     },
 

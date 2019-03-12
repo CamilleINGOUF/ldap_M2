@@ -40,11 +40,20 @@ router.post('/', async (req, res, next) => {
     }
     res.send(resultat)
   } else if(state.supp) {
+    const groups = await LDAP.search('people') 
     const resultat = await LDAP.del(req.body.state.dn)
-    res.send(resultat)
+    const change = new ldapjs.Change({
+      operation: 'delete',
+      modification: {
+        memberUid: state.uid
+      }
+    });
+    groups.forEach(async group => await LDAP.put(group.dn, change)).then(() => 
+    res.send(resultat))
   } else if(state.import) {
     delete state.user.dn
-    console.log(state.user)
+    delete state.user.controls
+    console.log(state.dn, state.user)
     const resultat = await LDAP.add(state.dn, state.user)
     res.send(resultat)
   } else {

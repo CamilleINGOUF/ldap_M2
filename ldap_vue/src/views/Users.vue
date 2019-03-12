@@ -8,8 +8,8 @@
         vertical
       ></v-divider>
       <v-spacer></v-spacer>
-      <form-user v-on:update="getData"/>
-      <v-btn color="red" @click="dialogConfirmDelete = true">Tout supprimer</v-btn>
+      <form-user v-on:update="getData" v-if="info.login === 'Admin'"/>
+      <v-btn color="red" v-if="info.login === 'Admin'" @click="dialogConfirmDelete = true">Tout supprimer</v-btn>
     </v-toolbar>
     <v-data-table
       hide-actions
@@ -158,12 +158,13 @@ export default {
         dn: dn,
         supp: true
       }
-      const res = axios.post('http://localhost:3000/users',{state: state}).then(async resut => resut)
+      const res = await axios.post('http://localhost:3000/users',{state: state}).then(async resut => resut)
       await this.getData()
     },
 
     async updateItem (dn, state) {
-      const res = axios.post('http://localhost:3000/users',{state: state}).then(async resut => resut)
+      const res = await axios.post('http://localhost:3000/users',{state: state}).then(async resut => resut)
+      await this.getData()
     },
 
     reset () {
@@ -184,9 +185,8 @@ export default {
       } else {
         state['pass'] = this.pass
       }
-      this.updateItem (this.toEdit.dn, state)
+      await this.updateItem (this.toEdit.dn, state)
       this.reset()
-      await this.getData()
     },
 
     cancelDelete () {
